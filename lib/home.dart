@@ -3,6 +3,7 @@ import 'package:proyecto_integrador/rastreo.dart';
 import 'package:proyecto_integrador/informe.dart';
 import 'package:proyecto_integrador/prueba.dart';
 
+
 void main() => runApp(new SecondScreen());
 
 class SecondScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class _SecondScreenState extends State<SecondScreen> {
   int _currentIndex = 0;
     final List<Widget> _children = [
       Rastreo(),
-      Informe(Colors.green),
+      Informe(),
       Prueba()
     ];
   @override
