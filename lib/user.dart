@@ -12,10 +12,10 @@ class Datos{
   factory Datos.fromJson(Map<String, dynamic> parsedJson){
     return Datos(
       id:parsedJson['id'] as int,
-      name:parsedJson['name'] as String,
-      lastname:parsedJson['lastname'] as String,
-      username:parsedJson['username'] as String,
-      typeUser:parsedJson['typeUser'] as String,
+      name:parsedJson['name'].toString(),
+      lastname:parsedJson['lastname'].toString(),
+      username:parsedJson['username'].toString(),
+      typeUser:parsedJson['typeUser'].toString(),
     );
   }
 }
