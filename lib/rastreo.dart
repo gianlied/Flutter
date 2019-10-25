@@ -1,7 +1,10 @@
 //import 'package:proyecto_integrador/home.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-//import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 /*import 'package:http/http.dart' show get;
 import 'dart:convert';*/
 
@@ -12,7 +15,41 @@ class Rastreo extends StatefulWidget {
 }
 
 class _Rastreo extends State<Rastreo> {
-  // This widget is the root of your application.
+  // This widget is the root of your application.Map data;
+  Map data;
+  List userData;
+  String userid;
+  String valorS;
+  
+
+  Future fetchUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'userInfo';
+    final value = prefs.getInt(key) ?? 0;
+    final prefs2 = await SharedPreferences.getInstance();
+    final key2 = 'userInfo2';
+    final value2 = prefs2.getString(key2) ?? "";
+    valorS = value2;
+    print('ayuda');
+    print("read $value2");
+    print(valorS);
+    var url =
+        'http://172.16.194.217/api/project_user/projects_user.php?id_user=' + value.toString();
+    var response = await http.get(url);
+    data = json.decode(response.body);
+    print('probando');
+    print("read $value");
+    setState(() {
+      userData = data["data"];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
@@ -21,7 +58,7 @@ class _Rastreo extends State<Rastreo> {
     // TextStyle nani = TextStyle(fontFamily: 'Roboto-Regular', fontSize: 20.0);
     final bienvenido = RichText(
         text: TextSpan(
-            text: 'Bienvenido señor ABC',
+            text: 'Bienvenido señor $valorS',
             style: TextStyle(
               fontFamily: 'Roboto-Regular',
               fontSize: 25,
@@ -48,8 +85,75 @@ class _Rastreo extends State<Rastreo> {
                 ))
           ])),
     );
-
     return Scaffold(
+        body: SafeArea(
+      child: Container(
+        height: ScreenUtil.getInstance().setHeight(1334),
+        width: ScreenUtil.getInstance().setWidth(750),
+        color: Colors.black87,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: ScreenUtil.getInstance().setHeight(20),
+              ),
+              bienvenido,
+              SizedBox(
+                height: ScreenUtil.getInstance().setHeight(100),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: userData == null? 0 : userData.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                        child: Container(
+                      alignment: FractionalOffset.center,
+                      //margin: EdgeInsets.all(10.0),
+                      width: double.infinity,
+                      height: ScreenUtil.getInstance().setHeight(120),
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(8.0),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black,
+                                offset: Offset(0.0, 15.0),
+                                blurRadius: 10.0),
+                            BoxShadow(
+                              color: Colors.black,
+                              offset: Offset(0.0, -8.0),
+                              blurRadius: 0.0,
+                            ),
+                          ]),
+                      child: Column(
+                        
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "${userData[index]["title"]}" +
+                                (index + 1).toString(),
+                            style: TextStyle(fontSize: 17, color: Colors.white),
+                          ),
+                          SizedBox(
+                              height: ScreenUtil.getInstance().setHeight(20)),
+                          
+                        ],
+                      ),
+                    ));
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    ));
+  }
+}
+/*return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -159,3 +263,13 @@ class _Rastreo extends State<Rastreo> {
     );
   }
 }
+
+*/
+/*Future <int> _read() async{
+  final prefs = await SharedPreferences.getInstance();
+  final key = 'userInfo';
+  final value = prefs.getInt(key) ?? 0;
+  print('vamoss');
+  print('read: $value');
+  return value;
+}*/

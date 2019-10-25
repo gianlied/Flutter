@@ -1,74 +1,70 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:proyecto_integrador/rastreo.dart';
 import 'package:proyecto_integrador/informe.dart';
 import 'package:proyecto_integrador/prueba.dart';
-
-
-void main() => runApp(new SecondScreen());
+import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:proyecto_integrador/main.dart';
 
 class SecondScreen extends StatefulWidget {
-  State<StatefulWidget> createState() => _SecondScreenState();
+  final String value;
+  final String username;
+  final String password;
+  SecondScreen({this.value, this.username, this.password});
+
+  State<StatefulWidget> createState() => _SecondScreenState(value: value, username:username, password:password);
 }
 
 class _SecondScreenState extends State<SecondScreen> {
   // This widget is the root of your application.
+  final String value;
+  final String username;
+  final String password;
+  _SecondScreenState({this.value, this.username, this.password});
   int _currentIndex = 0;
-    final List<Widget> _children = [
-      Rastreo(),
-      Informe(),
-      Prueba()
-    ];
+  Map data;
+  Map projects;
+  List userData;
+  List projectData;
+  String userid;
+
+  Future fetchProject(String idUser) async {
+    var url =
+        'http://192.168.2.115/api/project_user/projects_user.php?id_user='+ value;
+    var response = await http.get(url);
+    projects = json.decode(response.body);
+    print(projects);
+    setState(() {
+      projectData = projects["data"];
+    });
+  }
+  Future fetchUser(String username, String password) async {
+    var url =
+        'http://192.168.2.115/api/login/login.php?username=' +
+        username +
+        "&password=" +
+        password;
+    var response = await http.get(url);
+    data = json.decode(response.body);
+    print(data);
+    setState(() {
+      userData = data["data"];
+    });
+  }
+
+  final List<Widget> _children = [Rastreo(), Informe(), Prueba()];
+  @override
+  void initState() {
+    super.initState();
+    fetchUser(username, password);
+    fetchProject(value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    /*final bienvenido = RichText(
-        text: TextSpan(
-            text: 'Bienvenido señor ABC',
-            style: TextStyle(
-              fontFamily: 'Roboto-Regular',
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            )));
-    final sendbutton = Material(
-      elevation: 8.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.black,
-      child: RichText(
-          text: TextSpan(
-              text: 'nombre del proyecto',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-              children: <TextSpan>[
-            TextSpan(
-                text: 'breve descripcion del proyecto',
-                style: TextStyle(
-                  color: Colors.white,
-                ))
-          ])),
-    );*/
-
     return Scaffold(
       body: _children[_currentIndex],
-      /*  child: Container(
-          color: Colors.black87,
-          child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 25.0),
-                  bienvenido,
-                  SizedBox(height: 50.0),
-                  sendbutton,
-                  SizedBox(height: 50.0),
-                ],
-              )),
-        ),
-      ),*/
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTapTapped,
         currentIndex: _currentIndex,
@@ -93,7 +89,16 @@ class _SecondScreenState extends State<SecondScreen> {
 
   void onTapTapped(int index) {
     setState(() {
+      print(value);
       _currentIndex = index;
     });
   }
 }
+
+/*_read() async{
+  final prefs = await SharedPreferences.getInstance();
+  final key = 'userinfo';
+  final value = prefs.getInt(key) ?? 0 ;
+  print('read: $value');
+}*/
+

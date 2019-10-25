@@ -1,9 +1,15 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:proyecto_integrador/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyAppScreen());
 }
 
@@ -12,6 +18,8 @@ class MyAppScreen extends StatefulWidget {
 }
 
 class _MyApp extends State<MyAppScreen> {
+  Map user;
+  List obtenerId;
   bool visibilad = false;
   @override
   Widget build(BuildContext context) {
@@ -41,7 +49,41 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextStyle style = TextStyle(fontFamily: 'Roboto-Regular', fontSize: 20.0);
-  bool user = false;
+  Map user;
+  bool userTrue = false;
+  List obtenerId;
+  bool visibilad = false;
+  Future verifyLogin(String username, String password, BuildContext context,
+      int numero) async {
+    var url = 'http://172.16.194.217/api/login/login.php?username=' +
+        username +
+        "&password=" +
+        password;
+    final response = await http.get(url);
+    final String res = response.body;
+    print(res);
+    user = json.decode(response.body);
+    if (res.contains('none') == false) {
+      setState(() {
+        obtenerId = user["data"];
+        userTrue = false;
+      });
+       _checkLogIn(context, obtenerId);
+    } else {
+      setState(() {
+        userTrue = true;
+      });
+      print(userTrue);
+      print('nada');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     String valueUsername = "";
@@ -61,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.grey, fontFamily: 'Roboto-Regular', fontSize: 20.0),
           border: UnderlineInputBorder(borderSide: BorderSide())),
     );
+
     final passwordField = TextField(
       onChanged: (text) {
         valuePassword = text;
@@ -87,10 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
           print('Login Button Pressed!');
           verifyLogin(valueUsername, valuePassword, context, numero);
           //_showDialog();
-          setState(() {
-            user = !user;
-          });
-          print(user);
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -131,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Visibility(
                   child: Text('wrong password',
                       style: new TextStyle(color: Colors.red)),
-                  visible: user,
+                  visible: userTrue,
                 ),
                 SizedBox(
                   height: 105.0,
@@ -152,29 +191,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-    );
-  }
-
-  void _showDialog() {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Contrasena incorrecta"),
-          content: new Text("Por favor ingrese la contrasena correcta"),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
@@ -229,18 +245,7 @@ class LossPasword extends StatelessWidget {
                 style.copyWith(color: Colors.white, fontFamily: 'Roboto-Bold')),
       ),
     );
-    /*final emergente = RichText(
-        text: TextSpan(
-            text: 'volver',
-            style: TextStyle(
-                fontFamily: 'Roboto-Regular',
-                fontSize: 20,
-                color: Colors.blue,
-                decoration: TextDecoration.none),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                Navigator.pop(context);
-              }));*/
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -265,139 +270,18 @@ class LossPasword extends StatelessWidget {
   }
 }
 
-/*class WelcomeUser extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-   // TextStyle nani = TextStyle(fontFamily: 'Roboto-Regular', fontSize: 20.0);
-     final bienvenido = RichText(
-        text: TextSpan(
-            text: 'Bienvenido señor ABC',
-            style: TextStyle(
-                fontFamily: 'Roboto-Regular',
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              )
-        )
-      );
-    final sendbutton = Material(
-      elevation: 8.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.black,
-      child: RichText(
-        text: TextSpan(
-          text: 'nombre del proyecto',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-          children: <TextSpan>[
-            TextSpan(
-              text: 'breve descripcion del proyecto',
-              style: TextStyle(
-                color: Colors.white,
-              )
-            )
-          ]
-        )
-      ),
-      /*child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {},
-        child: Text("Titulo del proyecto",
-            textAlign: TextAlign.center,
-            style:
-                style.copyWith(color: Colors.white, fontFamily: 'Roboto-Bold')),
-      ),*/
-    );
-    /*final emergente = RichText(
-        text: TextSpan(
-            text: 'volver',
-            style: TextStyle(
-                fontFamily: 'Roboto-Regular',
-                fontSize: 20,
-                color: Colors.blue,
-                decoration: TextDecoration.none),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                Navigator.pop(context);
-              }));*/
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.black87,
-          child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 25.0),
-                  bienvenido,
-                  SizedBox(height: 50.0),
-                  sendbutton,
-                  SizedBox(height: 50.0),
-                ],
-              )),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blue,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.white),
-            title: Text('inicio',style: TextStyle(color: Colors.white))
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Colors.white,
-            icon: Icon(Icons.insert_drive_file, color: Colors.white),
-            title: Text('rastreo',style: TextStyle(color: Colors.white)),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart, color: Colors.white ),
-            title: Text('informe', style: TextStyle(color: Colors.white)),
-          )
-        ],
-      ),
-    );
-  }
-}
-*/
-Future verifyLogin(
-    String username, String password, BuildContext context, int numero) async {
-  try {
-    var url = 'http://192.168.2.115/api/login/login.php?username=' +
-        username +
-        "&password=" +
-        password;
-    final response = await http.get(url);
-    final String res = response.body;
-    if (res.contains('none') == false) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => SecondScreen()));
-      print(res);
-      print('entro');
-    } else {
-      print('aaaaa');
-      //print(data[0]["NAME"]);
-    }
-    
-  } catch (e) {
-    print(e);
-  }
-}
-
 Future verifyEmail(String email, BuildContext context) async {
   try {
-    var url = 'http://192.168.2.115/api/login/forgotPassword.php?email=' + email;
+    var url =
+        'http://192.168.2.115/api/login/forgotPassword.php?email=' + email;
     final response = await http.get(url);
     final String res = response.body;
+    print(res);
     if (res.contains(email) == true) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => SecondScreen()));
       print('entro');
+
     } else {
       print('aaa');
     }
@@ -405,4 +289,19 @@ Future verifyEmail(String email, BuildContext context) async {
   } catch (e) {
     print(e);
   }
+}
+_checkLogIn(BuildContext context, List obtenerId) async {
+
+  final prefs = await SharedPreferences.getInstance();
+  final key = 'userInfo';
+  final value = int.parse("${obtenerId[0]['ID']}");
+  final prefs2 = await SharedPreferences.getInstance();
+  final key2 = 'userInfo2';
+  final value2 = "${obtenerId[0]['NAME']}";
+  prefs.setInt(key, value);
+  prefs2.setString(key2, value2);
+  print('saved $value');
+  print('grabado $value2');
+
+  Navigator.push(context, MaterialPageRoute(builder: (context) => SecondScreen()));
 }

@@ -6,54 +6,51 @@ import 'package:http/http.dart' as http;
 //import 'package:proyecto_integrador/user.dart';
 
 class Prueba extends StatefulWidget {
+  //final String value;
+  //Prueba({{Key key, this.value}}): super(key: key);
   State<StatefulWidget> createState() => _Prueba();
 }
-
 
 class _Prueba extends State<Prueba> {
   Map data;
   List userData;
+  String userid;
 
-  Future fetchUser() async {
-    var url = 'http://192.168.2.115/api/login/login.php?username=' +
-        'gcarvajal' +
-        "&password=" +
-        'madoka';
+  Future fetchUser(String idUser) async {
+    var url =
+        'http://172.16.194.217/api/project_user/projects_user.php?id_user=2000';
     var response = await http.get(url);
     data = json.decode(response.body);
+    print(data);
     setState(() {
       userData = data["data"];
     });
   }
 
- @override
+  @override
   void initState() {
     super.initState();
-    fetchUser();
+    fetchUser(userid);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('prueba de Json'),
-        ),
-        body: ListView.builder(
-            itemCount: userData == null ? 0: userData.length,
-            itemBuilder: (BuildContext context, int index){
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    "${userData[index]["NAME"]}${userData[index]["LASTNAME"]}"
-                  ),
-                ),
-
-              );
-            },
-            
-          ),
-        );
+      appBar: AppBar(
+        title: Text('prueba de Json'),
+      ),
+      body: ListView.builder(
+        itemCount: userData == null ? 0 : userData.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text("${userData[index]["title"]}"),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
