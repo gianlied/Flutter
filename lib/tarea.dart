@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Fase extends StatefulWidget {
-  State<StatefulWidget> createState() => _Fase();
+class Tarea extends StatefulWidget {
+  State<StatefulWidget> createState() => _Tarea();
 }
 
-class _Fase extends State<Fase> {
+class _Tarea extends State<Tarea> {
   Map data;
   List userData;
   String userid;
@@ -95,7 +95,7 @@ class _Fase extends State<Fase> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => Fase()));
+                                              builder: (context) => Tarea()));
                                     },
                                     child: Container(
                                       width: ScreenUtil.getInstance()

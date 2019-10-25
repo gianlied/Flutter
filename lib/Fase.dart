@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:proyecto_integrador/tarea.dart';
 
 class Fase extends StatefulWidget {
   State<StatefulWidget> createState() => _Fase();
@@ -96,7 +97,7 @@ class _Fase extends State<Fase> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => Fase()));
+                                              builder: (context) => Tarea()));
                                     },
                                     child: Container(
                                       width: ScreenUtil.getInstance()
