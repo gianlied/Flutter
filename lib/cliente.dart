@@ -8,13 +8,13 @@ import 'package:proyecto_integrador/tarea.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:proyecto_integrador/user.dart';
 
-class Prueba extends StatefulWidget {
+class Cliente extends StatefulWidget {
   //final String value;
   //Prueba({{Key key, this.value}}): super(key: key);
-  State<StatefulWidget> createState() => _Prueba();
+  State<StatefulWidget> createState() => _Cliente();
 }
 
-class _Prueba extends State<Prueba> {
+class _Cliente extends State<Cliente> {
   Map data;
   List userData;
   String userid;
@@ -23,7 +23,7 @@ class _Prueba extends State<Prueba> {
     final prefs = await SharedPreferences.getInstance();
     final key = 'userInfo';
     final value = prefs.getInt(key) ?? 0;
-    var url = 'http://172.16.208.90/API_PM/api/ingresos/getIngresosUser.php?id_user=' +
+    var url = 'http://192.168.2.160/api/ingresos/ingresos.php?id_project=' +
         value.toString();
     var response = await http.get(url);
     data = json.decode(response.body);

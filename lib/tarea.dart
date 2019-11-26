@@ -19,7 +19,7 @@ class _Tarea extends State<Tarea> {
     final value5 = prefs5.getString(key5) ?? " ";
     print("readome  $value5");
     var url =
-        'http://192.168.2.115/api/project_user/tareas_fases/tareasFases?id_fase=' +
+        'http://172.16.208.90/API_PM/api/project_user/tareas_fases/tareasFases.php?id_fase=' +
             value5;
     var response = await http.get(url);
     data = json.decode(response.body);
@@ -61,6 +61,61 @@ class _Tarea extends State<Tarea> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Tareas'),
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(20.0),
+          width: ScreenUtil.getInstance().setWidth(750),
+          height: ScreenUtil.getInstance().setHeight(1334),
+          color: Colors.black87,
+          child: ListView.builder(
+            itemCount: userData == null ? 0 : userData.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                  color: Colors.black87,
+                  child: InkWell(
+                    onTap: () {
+                      //_currentIndex = index;
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Tarea()));
+                    },
+                    //color: Colors.black87,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            "tarea: ${userData[index]["title"]}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 6.0),
+                          Text(
+                            "estado: ${userData[index]["estado"]}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 6.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ));
+            },
+          ),
+        ));
+  }
+}
+
+/*  @override
+  Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
@@ -77,7 +132,7 @@ class _Tarea extends State<Tarea> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Fases del proyecto',
+                          'tareas',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -129,7 +184,7 @@ class _Tarea extends State<Tarea> {
                                                   .setWidth(550),
                                               height: ScreenUtil.getInstance()
                                                   .setHeight(100),
-                                              decoration: BoxDecoration(
+                                              /*decoration: BoxDecoration(
                                                 gradient: LinearGradient(
                                                     colors: [
                                                       Colors.white,
@@ -138,13 +193,13 @@ class _Tarea extends State<Tarea> {
                                                     begin:
                                                         Alignment.centerRight,
                                                     end: Alignment.centerLeft),
-                                              ),
+                                              ),*/
                                               child: Center(
                                                   child: Text(
-                                                "50%",
+                                                "${userData[index]["estado"]}",
                                                 style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.black,
+                                                    fontSize: 30,
+                                                    color: Colors.white,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               )),
@@ -157,3 +212,4 @@ class _Tarea extends State<Tarea> {
     );
   }
 }
+*/

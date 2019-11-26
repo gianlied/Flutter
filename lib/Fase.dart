@@ -13,6 +13,11 @@ class _Fase extends State<Fase> {
   Map data;
   List userData;
   String userid;
+  Map datos;
+  List userData2;
+  int count = 0;
+  double progreso= 0.0;
+  String texto= "";
 
   Future fetchUser() async {
     final prefs4 = await SharedPreferences.getInstance();
@@ -20,7 +25,7 @@ class _Fase extends State<Fase> {
     final value4 = prefs4.getString(key4) ?? " ";
     print("readome  $value4");
     var url =
-        'http://192.168.2.115/api/project_user/fases_project.php?id_project=' +
+        'http://172.16.208.90/API_PM/api/project_user/fases_project.php?id_project=' +
             value4;
     var response = await http.get(url);
     data = json.decode(response.body);
@@ -30,7 +35,53 @@ class _Fase extends State<Fase> {
       userData = data['data'];
     });
     _checkTarea(context, userData);
+
   }
+  /* Future fetchUser2() async {
+    final prefs5 = await SharedPreferences.getInstance();
+    final key5 = 'userInfo5';
+    final value5 = prefs5.getString(key5) ?? " ";
+    print("readome  $value5");
+    var url2 =
+        'http://192.168.2.160/api/project_user/tareas_fases/tareasFases?id_fase=' +
+            value5;
+    var response2 = await http.get(url2);
+    data = json.decode(response2.body);
+    print('omee22');
+    //print(datos);
+    setState(() {
+    /*userData2 = data['data2'];*/
+    /*  for(int index=0; index<=data.length; index++){
+    if("${userData2[index]["estado"]}"=="satisfecho"){
+      count++;
+      print('entro');
+      print(count);
+      print(data.length);
+    } else{
+      print('no suma');
+      print(count);
+    }
+  }*/
+  count=1;
+  progreso=(count/3)*100;
+  texto=progreso.toString();
+  print(progreso);
+  //print(datos.length);
+    });
+  }*/
+  /*void porcentaje() async {
+  for(int i=0; 1<data2.length; i++){
+    if("${userData[i]["estado"]}".contains('satisfecho')){
+      count++;
+    } else{
+      print('no suma');
+      print(count);
+    }
+  }
+  progreso=(data2.length/count)*100;
+  texto=progreso.toString();
+  print(progreso);
+}*/
 
   /*Future fetchUser2() async {
     var url =
@@ -55,13 +106,53 @@ class _Fase extends State<Fase> {
 
   @override
   void initState() {
+    fetchUser();
+    //fetchUser2();
     super.initState();
     fetchUser();
-    /*fetchUser2();
-    fetchUser3();*/
+    //fetchUser2();
   }
 
-  @override
+ @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Fases'),
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(20.0),
+          width: ScreenUtil.getInstance().setWidth(750),
+          height: ScreenUtil.getInstance().setHeight(1334),
+          color: Colors.black87,
+          child: ListView.builder(
+            itemCount: userData == null ? 0 : userData.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                  color: Colors.black87,
+                  child: InkWell(
+                    onTap: () {
+                      //_currentIndex = index;
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Tarea()));
+                    },
+                    //color: Colors.black87,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        "${userData[index]["title"]}",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ));
+            },
+          ),
+        ));
+  }
+}
+ /* @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
@@ -88,7 +179,11 @@ class _Fase extends State<Fase> {
                         Expanded(
                             child: ListView.builder(
                           itemCount:
-                              userData.length == null ? 0 : userData.length,
+                              data.length == null ? Container(
+                                child: Center(
+                                  child: Text("loading"),
+                                ),
+                              ) : data.length+1,
                           itemBuilder: (BuildContext context, int index) {
                             return Card(
                                 child: InkWell(
@@ -143,7 +238,7 @@ class _Fase extends State<Fase> {
                                               ),
                                               child: Center(
                                                   child: Text(
-                                                "50%",
+                                                texto,
                                                 style: TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black,
@@ -158,12 +253,12 @@ class _Fase extends State<Fase> {
                       ])))),
     );
   }
-}
+}*/
 _checkTarea(BuildContext context, List userData) async {
   final prefs5 = await SharedPreferences.getInstance();
   final key5 = 'userInfo5';
-  final value5 = "${userData[0]['id_fase']}";
+  final value5 = "${userData[0]['ID']}";
   prefs5.setString(key5, value5);
-  print('read: $value5');
+  print('read valor 5: $value5');
   print('enraaas');
 }

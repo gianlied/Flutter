@@ -28,10 +28,11 @@ class _SecondScreenState extends State<SecondScreen> {
   List userData;
   List projectData;
   String userid;
+  String identificacion;
 
   Future fetchProject(String idUser) async {
     var url =
-        'http://192.168.2.115/api/project_user/projects_user.php?id_user='+ value;
+        'http://172.16.208.90/API_PM/api/project_user/projects_user.php?id_user='+ value;
     var response = await http.get(url);
     projects = json.decode(response.body);
     print(projects);
@@ -41,7 +42,7 @@ class _SecondScreenState extends State<SecondScreen> {
   }
   Future fetchUser(String username, String password) async {
     var url =
-        'http://192.168.2.115/api/login/login.php?username=' +
+        'http://192.168.2.160/API_PM/api/login/login.php?username=' +
         username +
         "&password=" +
         password;
@@ -52,13 +53,15 @@ class _SecondScreenState extends State<SecondScreen> {
       userData = data["data"];
     });
   }
-
+ 
   final List<Widget> _children = [Rastreo(), Informe(), Prueba()];
   @override
   void initState() {
-    super.initState();
     fetchUser(username, password);
     fetchProject(value);
+    super.initState();
+    /*fetchUser(username, password);
+    fetchProject(value);*/
   }
 
   @override

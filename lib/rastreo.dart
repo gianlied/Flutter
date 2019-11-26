@@ -20,7 +20,6 @@ class _Rastreo extends State<Rastreo> {
   List userData;
   String userid;
   String valorS;
-  
 
   Future fetchUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -34,7 +33,8 @@ class _Rastreo extends State<Rastreo> {
     print("read $value2");
     print(valorS);
     var url =
-        'http://172.16.194.217/api/project_user/projects_user.php?id_user=' + value.toString();
+        'http://172.16.208.90/API_PM/api/project_user/projects_user.php?id_user=' +
+            value.toString();
     var response = await http.get(url);
     data = json.decode(response.body);
     print('probando');
@@ -49,7 +49,7 @@ class _Rastreo extends State<Rastreo> {
     super.initState();
     fetchUser();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
@@ -65,7 +65,7 @@ class _Rastreo extends State<Rastreo> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             )));
-    final sendbutton = Material(
+   /* final sendbutton = Material(
       elevation: 8.0,
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.black,
@@ -84,7 +84,7 @@ class _Rastreo extends State<Rastreo> {
                   color: Colors.white,
                 ))
           ])),
-    );
+    );*/
     return Scaffold(
         body: SafeArea(
       child: Container(
@@ -106,7 +106,13 @@ class _Rastreo extends State<Rastreo> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: userData == null? 0 : userData.length,
+                  itemCount: userData == null
+                      ? Container(
+                          child: Center(
+                            child: Text("loading"),
+                          ),
+                        )
+                      : userData.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
                         child: Container(
@@ -129,7 +135,6 @@ class _Rastreo extends State<Rastreo> {
                             ),
                           ]),
                       child: Column(
-                        
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Text(
@@ -139,7 +144,6 @@ class _Rastreo extends State<Rastreo> {
                           ),
                           SizedBox(
                               height: ScreenUtil.getInstance().setHeight(20)),
-                          
                         ],
                       ),
                     ));

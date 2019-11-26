@@ -20,34 +20,8 @@ class _Informe extends State<Informe> {
     final prefs = await SharedPreferences.getInstance();
     final key = 'userInfo';
     final value = prefs.getInt(key) ?? 0;
-    /*final loading = Container(
-        height: ScreenUtil.getInstance().setHeight(834),
-        width: ScreenUtil.getInstance().setWidth(650),
-        decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(7.0),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black,
-                  offset: Offset(0.0, 15.0),
-                  blurRadius: 10.0),
-              BoxShadow(
-                color: Colors.black,
-                offset: Offset(0.0, -8.0),
-                blurRadius: 0.0,
-              ),
-            ]),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Loading',
-                style: TextStyle(fontSize: 17, color: Colors.white),
-              ),
-            ]));*/
-
     var url =
-        'http://192.168.2.115/api/project_user/projects_user.php?id_user=' +
+        'http://172.16.208.90/API_PM/api/project_user/projects_user.php?id_user=' +
             value.toString();
     var response = await http.get(url);
     data = json.decode(response.body);
@@ -60,11 +34,50 @@ class _Informe extends State<Informe> {
 
   @override
   void initState() {
-    super.initState();
     fetchUser(userid);
+    super.initState();
+    //fetchUser(userid);
   }
-
-  @override
+ @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('proyectos'),
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(20.0),
+          width: ScreenUtil.getInstance().setWidth(750),
+          height: ScreenUtil.getInstance().setHeight(1334),
+          color: Colors.black87,
+          child: ListView.builder(
+            itemCount: userData == null ? 0 : userData.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                  color: Colors.black87,
+                  child: InkWell(
+                    onTap: () {
+                      //_currentIndex = index;
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Fase()));
+                    },
+                    //color: Colors.black87,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        "${userData[index]["title"]}",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ));
+            },
+          ),
+        ));
+  }
+}
+ /* @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
@@ -85,13 +98,17 @@ class _Informe extends State<Informe> {
                           'proyectos',
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: 30,
                               fontWeight: FontWeight.bold),
                         ),
                         Expanded(
                             child: ListView.builder(
                           itemCount:
-                              userData.length == null ? 0 : userData.length,
+                              data.length == null ? Container(
+                                child: Center(
+                                  child: Text("loading"),
+                                ),
+                              ) : data.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Card(
                                 child: InkWell(
@@ -162,7 +179,7 @@ class _Informe extends State<Informe> {
     );
   }
 }
-
+*/
 _checkFase(BuildContext context, List userData) async {
   final prefs4 = await SharedPreferences.getInstance();
   final key4 = 'userInfo4';

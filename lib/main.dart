@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:proyecto_integrador/cliente.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations(
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool visibilad = false;
   Future verifyLogin(String username, String password, BuildContext context,
       int numero) async {
-    var url = 'http://172.16.194.217/api/login/login.php?username=' +
+    var url = 'http://172.16.208.90/API_PM/api/login/login.php?username=' +
         username +
         "&password=" +
         password;
@@ -90,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String valuePassword = "";
     int numero = 0;
 
-    final UsernameField = TextField(
+    final usernameField = TextField(
       onChanged: (text) {
         valueUsername = text;
       },
@@ -128,6 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           print('Login Button Pressed!');
+          print(valueUsername);
+          print(valuePassword);
           verifyLogin(valueUsername, valuePassword, context, numero);
           //_showDialog();
         },
@@ -161,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
               // mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(height: 2.0),
-                UsernameField,
+                usernameField,
                 SizedBox(height: 25.0),
                 passwordField,
                 SizedBox(
@@ -273,7 +276,7 @@ class LossPasword extends StatelessWidget {
 Future verifyEmail(String email, BuildContext context) async {
   try {
     var url =
-        'http://192.168.2.115/api/login/forgotPassword.php?email=' + email;
+        'http://192.168.2.160/api/login/forgotPassword.php?email=' + email;
     final response = await http.get(url);
     final String res = response.body;
     print(res);
@@ -298,10 +301,15 @@ _checkLogIn(BuildContext context, List obtenerId) async {
   final prefs2 = await SharedPreferences.getInstance();
   final key2 = 'userInfo2';
   final value2 = "${obtenerId[0]['NAME']}";
+  final prefsUser = await SharedPreferences.getInstance();
+  final user2 = 'userInfo3';
+  final identificacion2 = "${obtenerId[0]['TYPE_USER']}";
   prefs.setInt(key, value);
   prefs2.setString(key2, value2);
+  prefsUser.setString(user2, identificacion2);
   print('saved $value');
   print('grabado $value2');
+  print('grabado $identificacion2');
 
   Navigator.push(context, MaterialPageRoute(builder: (context) => SecondScreen()));
 }
